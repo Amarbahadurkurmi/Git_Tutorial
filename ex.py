@@ -1,47 +1,30 @@
 import tkinter as tk
+from datetime import datetime
 
-def update_label(*args):
-    try:
-        # Get the current values from both entry widgets
-        num1 = float(entry_var1.get() or 0)
-        num2 = float(entry_var2.get() or 0)
-        
-        # Calculate the sum
-        result = num1 + num2
-        
-        # Update the label with the result
-        result_label.config(text=f"Result: {result}")
-    except ValueError:
-        # If there's a value error (e.g., input is not a number), just ignore it
-        result_label.config(text="Invalid input")
+def update_time():
+    # Get the current date and time
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # Update the label with the current date and time
+    time_label.config(text=current_time)
+    
+    # Schedule the update_time function to be called again after 1000 milliseconds (1 second)
+    root.after(1000, update_time)
 
 def main():
-    global entry_var1, entry_var2, result_label
+    global time_label, root
 
     root = tk.Tk()
-    root.title("Live Addition")
+    root.title("Date and Time Display")
 
-    # Create StringVar variables to hold the entry widget values
-    entry_var1 = tk.StringVar()
-    entry_var2 = tk.StringVar()
+    # Create a label to display the current date and time
+    time_label = tk.Label(root, font=("Arial", 20))
+    time_label.pack(pady=20)
 
-    # Trace changes to the StringVar variables
-    entry_var1.trace_add("write", update_label)
-    entry_var2.trace_add("write", update_label)
+    # Initialize the time update
+    update_time()
 
-    # Create and place the first entry widget
-    entry1 = tk.Entry(root, textvariable=entry_var1)
-    entry1.pack(pady=5)
-
-    # Create and place the second entry widget
-    entry2 = tk.Entry(root, textvariable=entry_var2)
-    entry2.pack(pady=5)
-
-    # Create and place the label to display the result
-    result_label = tk.Label(root, text="Result: 0")
-    result_label.pack(pady=5)
-
-    # Start the Tkinter event loop
+    # Start the main event loop
     root.mainloop()
 
 if __name__ == "__main__":
