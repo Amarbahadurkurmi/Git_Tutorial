@@ -6,22 +6,72 @@ import os
 import openpyxl as xl
 import pandas as pd
 from datetime import datetime
+import footer
+from openpyxl import load_workbook, Workbook
 
-df = pd.read_excel('.\STN_PCDO.xlsx',sheet_name='STN_LIST')
+
+# excelconn.load_workbook()
+# excelconn.savefile()
+
+# ************************** Combobox List integrete with Excelsheet ***************************
+
+df = pd.read_excel('STN_PCDO.xlsx',sheet_name='STN_LIST')
 stnlist = df.iloc[:,0].tolist()
-# ********************************************************************************************
-################### Date and time function #####################################
-def update_time():
-    global datelbl
-    # Get the current date and time
-    current_time = datetime.now().strftime("%d-%m-%y %H:%M:%S")
+################################################################################################
+def clear():
+    acpcs.delete(0,END)
+    fcpcs.delete(0,END)
+    iipcs.delete(0,END)
+    ublcs.delete(0,END)
+    mepcs.delete(0,END)
+    acdcs.delete(0,END)
+    fcdcs.delete(0,END)
+    medcs.delete(0,END)
+    ltcs.delete(0,END)
+    smcs.delete(0,END)
+    staff.delete(0,END)
+    wd.delete(0,END)
+    totalcs.config(text='')
     
-    # Update the label with the current date and time
-    datelbl.config(text=current_time)
-    
-    # Schedule the update_time function to be called again after 1000 milliseconds (1 second)
-    datelbl.after(1000, update_time)
-    
+    # Amount
+    acpamt.delete(0,END)
+    fcpamt.delete(0,END)
+    iipamt.delete(0,END)
+    ublamt.delete(0,END)
+    mepamt.delete(0,END)
+    acdamt.delete(0,END)
+    fcdamt.delete(0,END)
+    medamt.delete(0,END)
+    ltamt.delete(0,END)
+    smamt.delete(0,END)
+    totalamt.config(text='')
+    set_zero()
+    stncomb.focus()
+
+def set_zero():
+
+    acpcs.insert(0,0)
+    acpamt.insert(0,0)
+    fcpcs.insert(0,0)
+    fcpamt.insert(0,0)
+    iipcs.insert(0,0)
+    iipamt.insert(0,0)
+    ublcs.insert(0,0)
+    ublamt.insert(0,0)
+    mepcs.insert(0,0)
+    mepamt.insert(0,0)
+    medcs.insert(0,0)
+    medamt.insert(0,0)
+    staff.insert(0,0)
+    wd.insert(0,0)
+    ltcs.insert(0,0)
+    ltamt.insert(0,0)
+    smcs.insert(0,0)
+    smamt.insert(0,0)
+    acdcs.insert(0,0)
+    acdamt.insert(0,0)
+    fcdcs.insert(0,0)
+    fcdamt.insert(0,0)
 # Method section
 def show(*args):
     # Cases
@@ -77,6 +127,7 @@ win.geometry("%dx%d" % (width, height))
 tk.Label(win,text='STATION PCDO ENTRY FORM',font=('New Times Roman',20,'bold'),relief=GROOVE,padx=10,
                       pady=1,bd=5,fg='dark slate blue',bg='sky blue').pack(fill=X,ipadx=5,ipady=2)
 
+
 #####################################################################################################
 # Station selection and search form
 
@@ -114,7 +165,7 @@ srchbutton = tk.Button(stnlable,text='Search',padx=10,pady=5,font=('Times New Ro
                       fg='brown',bg='yellow').grid(row=0,column=9,padx=10,pady=10)
 
 clrhbutton = tk.Button(stnlable,text='CLEAR',padx=10,pady=5,font=('Times New Roman',12,'bold'),
-                      fg='brown',bg='yellow').grid(row=0,column=10,padx=10,pady=10)
+                      fg='brown',bg='yellow',command=clear).grid(row=0,column=10,padx=10,pady=10)
 
 stnlable.pack()
 ##########################################################################################################
@@ -376,7 +427,7 @@ medamt.bind("<KeyRelease>",show)
 meframe.grid(row=0,column=5,padx=10,pady=10,ipadx=5) # ME Frame close
 
 ############################################################################################################
-mainframe.pack(fill=X)  #Main Frame close
+mainframe.pack()  #Main Frame close
 
 ################################# Summery ##################################################
 
@@ -389,14 +440,14 @@ suburbanframe = tk.LabelFrame(summryframe,text='Suburban',font=('New Times Roman
 tk.Label(suburbanframe,text='Total C/S',font=('New Times Roman',12,'bold')).grid(row=0,column=0)
 
 tk.Label(suburbanframe,text='',font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5,bd=5,width=10).grid(row=0,column=1)
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=10).grid(row=0,column=1)
 
 tk.Label(suburbanframe,text='Total Amt',font=('New Times Roman',12,'bold')).grid(row=1,column=0)
 
 tk.Label(suburbanframe,text='',font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5,bd=5,width=10).grid(row=1,column=1)
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=10).grid(row=1,column=1)
 
-suburbanframe.grid(row=0,column=0,padx=2) # Suburban Close
+suburbanframe.grid(row=0,column=0,padx=2,ipady=5) # Suburban Close
 
 mainlineframe = tk.LabelFrame(summryframe,text='Mainline',font=('New Times Roman',10,'bold'),
             fg='blue',padx=10,relief=GROOVE,border=5)
@@ -404,14 +455,14 @@ mainlineframe = tk.LabelFrame(summryframe,text='Mainline',font=('New Times Roman
 tk.Label(mainlineframe,text='Total C/S',font=('New Times Roman',12,'bold')).grid(row=0,column=0)
 
 tk.Label(mainlineframe,text='',font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5,bd=5,width=10).grid(row=0,column=1)
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=10).grid(row=0,column=1)
 
 tk.Label(mainlineframe,text='Total Amt',font=('New Times Roman',12,'bold')).grid(row=1,column=0)
 
 tk.Label(mainlineframe,text='',font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5,bd=5,width=10).grid(row=1,column=1)
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=10).grid(row=1,column=1)
 
-mainlineframe.grid(row=0,column=1,padx=2) # Main line close
+mainlineframe.grid(row=0,column=1,padx=2,ipady=5) # Main line close
 
 litteringframe = tk.LabelFrame(summryframe,text='Littering',font=('New Times Roman',10,'bold'),
             fg='blue',padx=10,relief=GROOVE,border=5)
@@ -419,14 +470,14 @@ litteringframe = tk.LabelFrame(summryframe,text='Littering',font=('New Times Rom
 tk.Label(litteringframe,text='Total C/S',font=('New Times Roman',12,'bold')).grid(row=0,column=0)
 
 tk.Label(litteringframe,text='',font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5,bd=5,width=6).grid(row=0,column=1)
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=6).grid(row=0,column=1)
 
 tk.Label(litteringframe,text='Total Amt',font=('New Times Roman',12,'bold')).grid(row=1,column=0)
 
 tk.Label(litteringframe,text='',font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5,bd=5,width=6).grid(row=1,column=1)
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=6).grid(row=1,column=1)
 
-litteringframe.grid(row=0,column=2,padx=2) #Littering close
+litteringframe.grid(row=0,column=2,padx=2,ipady=5) #Littering close
 
 smokingframe = tk.LabelFrame(summryframe,text='Smoking',font=('New Times Roman',10,'bold'),
             fg='blue',padx=10,relief=GROOVE,border=5)
@@ -434,14 +485,14 @@ smokingframe = tk.LabelFrame(summryframe,text='Smoking',font=('New Times Roman',
 tk.Label(smokingframe,text='Total C/S',font=('New Times Roman',12,'bold')).grid(row=0,column=0)
 
 tk.Label(smokingframe,text='',font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5,bd=5,width=5).grid(row=0,column=1)
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=5).grid(row=0,column=1)
 
 tk.Label(smokingframe,text='Total Amt',font=('New Times Roman',12,'bold')).grid(row=1,column=0)
 
 tk.Label(smokingframe,text='',font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5,bd=5,width=5).grid(row=1,column=1)
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=5).grid(row=1,column=1)
 
-smokingframe.grid(row=0,column=3,padx=2)  # Smoking close
+smokingframe.grid(row=0,column=3,padx=2,ipady=5)  # Smoking close
 
 grandtotal = tk.LabelFrame(summryframe,text='Grand Total',font=('New Times Roman',10,'bold'),
             fg='blue',padx=10,relief=GROOVE,border=5)
@@ -449,38 +500,33 @@ grandtotal = tk.LabelFrame(summryframe,text='Grand Total',font=('New Times Roman
 tk.Label(grandtotal,text='Total C/S',font=('New Times Roman',12,'bold')).grid(row=0,column=0)
 
 tk.Label(grandtotal,text='',font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5,bd=5,width=10).grid(row=0,column=1)
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=10).grid(row=0,column=1)
 
 tk.Label(grandtotal,text='Total Amt',font=('New Times Roman',12,'bold')).grid(row=1,column=0)
 
 tk.Label(grandtotal,text='',font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5,bd=5,width=10).grid(row=1,column=1)
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=10).grid(row=1,column=1)
 
-grandtotal.grid(row=0,column=4,padx=5) # Grand Total close
+grandtotal.grid(row=0,column=4,padx=5,ipady=5) # Grand Total close
 
-slistframe = tk.LabelFrame(summryframe,text='Grand Total',font=('New Times Roman',10,'bold'),
+slistframe = tk.LabelFrame(summryframe,text='STN Periodical Not received',font=('New Times Roman',10,'bold'),
             fg='blue',padx=10,relief=GROOVE,border=5)
 
-slist = tk.Listbox(slistframe,)
+slist = tk.Listbox(slistframe,width=20,height=5)
 slist.pack()
+
+countlist = tk.Label(slistframe,text='',width=10,bd=2,font=('New Times Roman',12,'bold'),
+                   relief=GROOVE,padx=10,pady=5)
+countlist.pack()
+
+
 slistframe.grid(row=0,column=5,padx=2)
 
 summryframe.pack(ipadx=2,ipady=3) # Summery close
-##########################################################################################################
 
-cpframe = tk.LabelFrame(win,)
-copyrightlbl = tk.Label(cpframe,text='© 2024 CSDN Technology                        ',
-                            font=('New Times Roman',10,'bold'),fg='red',padx=300,justify=LEFT,anchor='w').grid(row=0,column=0)
+######################################################################################################
+footer.footer( root=win)
 
-datelbl = tk.Label(cpframe,font=('New Times Roman',10,'bold'),fg='blue',anchor='w',justify=LEFT)
-datelbl.grid(row=0,column=1)
-datelbl.config(text=update_time())
-cpframe.pack(fill=X,pady=2)
-##############################################################################################
+win.mainloop()  # Main Loop close
 
-# # Show entered data
-# dataframe= ttk.LabelFrame(win,text='Station wise Entered Data')
-
-# dataframe.pack(fill=X)
-
-win.mainloop()
+######################################################################################################
