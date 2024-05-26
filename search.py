@@ -1,77 +1,47 @@
-import tkinter as tk
-from tkinter import filedialog, messagebox
 import pandas as pd
-from openpyxl import load_workbook
+import tkinter as tk
+from tkinter import ttk
 
-class ExcelApp:
-    def __init__(self, master):
-        self.master = master
-        
-        self.file_path = 'STN_PCDO.xlsx'
-        self.sheets = ['maindata']
-        self.sheet_var = tk.StringVar()
-        
-        self.select_button = tk.Button(master, text="Select Excel File", command=self.select_file)
-        self.select_button.pack(pady=10)
-        
-        self.radio_frame = tk.Frame(master)
-        self.radio_frame.pack(pady=10)
-        
-        self.update_button = tk.Button(master, text="Update Excel", command=self.update_excel)
-        self.update_button.pack(pady=10)
+# Function to load data from Excel and display in widgets
+def load_data():
+    # Read data from Excel file
+    df = pd.read_excel('STN_PCDO.xlsx')  # Replace 'data.xlsx' with your Excel file name
     
-    def select_file(self):
-        self.file_path = filedialog.askopenfilename(
-            title="Open Excel File",
-            filetypes=(("Excel Files", "*.xlsx"), ("All Files", "*.*"))
-        )
-        
-        if self.file_path:
-            self.load_sheets()
+    # Get the first row of data
+    first_row = df.iloc[0]
     
-    def load_sheets(self,sheet):
-        df = pd.read_excel('STN_PCDO.xlsx', sheet_name='maindata')
-        workbook = load_workbook(self.file_path)
-        sheet = workbook['select_file']
-        
-        self.sheets = pd.ExcelFile(self.file_path).sheet_names
-        for widget in self.radio_frame.winfo_children():
-            widget.destroy()
-        
-        for sheet in self.sheets:
-            tk.Radiobutton(self.radio_frame, text=sheet, variable=self.sheet_var, value=sheet).pack(anchor=tk.W)
-        
-        if self.sheets:
-            self.sheet_var.set(self.sheets[0])  # Set default selection
+    # Display data in Entry and Label widgets
+    entry1.delete(0, tk.END)
+    entry1.insert(0, first_row[0])
     
-    def update_excel(self):
-        selected_sheet = self.sheet_var.get()
-        if not selected_sheet:
-            messagebox.showerror("Error", "No sheet selected!")
-            return
-        
-        try:
-            df = pd.read_excel(self.file_path, sheet_name=selected_sheet)
-            workbook = load_workbook(self.file_path)
-            sheet = workbook[selected_sheet]
-            
-            # Example tuple and data to be written
-            search_tuple = ("example1", "example2")
-            data_to_write = "New Data"
-            
-            for row_idx, row in df.iterrows():
-                if tuple(row[:len(search_tuple)]) == search_tuple:
-                    col_idx = len(row) + 1  # Assuming you want to write in the next column
-                    sheet.cell(row=row_idx+2, column=col_idx, value=data_to_write)
-                    break
-            
-            workbook.save(self.file_path)
-            messagebox.showinfo("Success", "Excel file updated successfully!")
-        except Exception as e:
-            messagebox.showerror("Error", str(e))
+    entry2.delete(0, tk.END)
+    entry2.insert(0, first_row[1])
+    
+    label1.config(text=first_row[2])
 
-# Main part of the program
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = ExcelApp(root)
-    root.mainloop()
+# Create the main window
+root = tk.Tk()
+root.title("Excel Data Display")
+
+# Create Entry widgets
+entry1 = tk.Entry(root, width=30)
+entry1.grid(row=0, column=1, padx=10, pady=10)
+
+entry2 = tk.Entry(root, width=30)
+entry2.grid(row=1, column=1, padx=10, pady=10)
+
+# Create Label widgets
+label1 = tk.Label(root, text="", width=30)
+label1.grid(row=2, column=1, padx=10, pady=10)
+
+# Create static labels for the Entry widgets
+tk.Label(root, text="Column 1:").grid(row=0, column=0, padx=10, pady=10)
+tk.Label(root, text="Column 2:").grid(row=1, column=0, padx=10, pady=10)
+tk.Label(root, text="Column 3:").grid(row=2, column=0, padx=10, pady=10)
+
+# Create a button to load data from Excel
+load_button = ttk.Button(root, text="Load Data", command=load_data)
+load_button.grid(row=3, column=0, columnspan=2, pady=20)
+
+# Run the application
+root.mainloop()
