@@ -7,17 +7,21 @@ import openpyxl as xl
 import pandas as pd
 from datetime import datetime
 import footer
+import a 
+
 
 
 ########################## Start Main Window Programm ############################################
 global acpcs,acdcs,fcpcs,fcdcs,iipcs,mepcs,medcs,smcs,ltcs,staff,wd,tcs
-global acdamt,acpamt,fcpamt,fcdamt,iipamt,mepamt,medamt,tamt,cmb
+global acdamt,acpamt,fcpamt,fcdamt,iipamt,mepamt,medamt,tamt,cmb,subcslbl
 
 win = tk.Tk()
 win.title("Staion PCDO")
 width= win.winfo_screenwidth()               
 height= win.winfo_screenheight()               
 win.geometry("%dx%d" % (width, height))
+
+
 
 ###################################################################################################
 
@@ -61,7 +65,7 @@ def insert_data():
         workbook.remove(workbook.active)  # Remove the default sheet
         sheet = workbook.create_sheet(title='Sheet1')
         sheet.append(['STN', 'AC_PWT_CS', 'AC_PWT_AMT','AC_DIFF_CS', 'AC_DIFF_AMT',
-                      'FC_PWT_CS','FC_DIFF_AMT', 'AC_DIFF_CS','FC_PWT_AMT',
+                      'FC_PWT_CS','FC_DIFF_AMT', 'FC_DIFF_CS','FC_PWT_AMT',
                       'II_PWT_CS','II_PWT_AMT', 'UBL_CS','UBL_AMT','TOTAL_CS','TOTAL_AMT',
                       'STAFF','WD','LITT_CS','LITT_AMT', 'SM_CS','SM_AMT',
                       'ME_PWT_CS', 'ME_PWT_AMT','ME_DIFF_CS', 'ME_DIFF_AMT','PERIOD'])  # Add headers
@@ -494,7 +498,7 @@ meframe.grid(row=0,column=5,padx=10,pady=10,ipadx=5) # ME Frame close
 ############################################################################################################
 mainframe.pack()  #Main Frame close
 
-################################# Summery ##################################################
+# ################################# Summery ##################################################
 
 summryframe = tk.LabelFrame(win,text='SUMMERY',font=('New Times Roman',10,'bold'),
             fg='blue',padx=10,relief=GROOVE,border=5)
@@ -504,13 +508,16 @@ suburbanframe = tk.LabelFrame(summryframe,text='Suburban',font=('New Times Roman
 
 tk.Label(suburbanframe,text='Total C/S',font=('New Times Roman',12,'bold')).grid(row=0,column=0)
 
-tk.Label(suburbanframe,text='',font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5,bd=3,width=10).grid(row=0,column=1)
+subcslbl=IntVar()
+subcslbl= tk.Label(suburbanframe,text='',font=('New Times Roman',12,'bold'),
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=10)
+subcslbl.grid(row=0,column=1)
 
 tk.Label(suburbanframe,text='Total Amt',font=('New Times Roman',12,'bold')).grid(row=1,column=0)
 
-tk.Label(suburbanframe,text='',font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5,bd=3,width=10).grid(row=1,column=1)
+subamtlbl=tk.Label(suburbanframe,text='',font=('New Times Roman',12,'bold'),
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=10)
+subamtlbl.grid(row=1,column=1)
 
 suburbanframe.grid(row=0,column=0,padx=2,ipady=5) # Suburban Close
 
@@ -519,76 +526,161 @@ mainlineframe = tk.LabelFrame(summryframe,text='Mainline',font=('New Times Roman
 
 tk.Label(mainlineframe,text='Total C/S',font=('New Times Roman',12,'bold')).grid(row=0,column=0)
 
-tk.Label(mainlineframe,text='',font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5,bd=3,width=10).grid(row=0,column=1)
+mlcslbl=tk.Label(mainlineframe,text='',font=('New Times Roman',12,'bold'),
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=10)
+mlcslbl.grid(row=0,column=1)
 
 tk.Label(mainlineframe,text='Total Amt',font=('New Times Roman',12,'bold')).grid(row=1,column=0)
 
-tk.Label(mainlineframe,text='',font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5,bd=3,width=10).grid(row=1,column=1)
+mlamtlbl=tk.Label(mainlineframe,text='',font=('New Times Roman',12,'bold'),
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=10)
+mlamtlbl.grid(row=1,column=1)
 
 mainlineframe.grid(row=0,column=1,padx=2,ipady=5) # Main line close
+
+ublframe = tk.LabelFrame(summryframe,text='UBL',font=('New Times Roman',10,'bold'),
+            fg='blue',padx=10,relief=GROOVE,border=5)
+
+tk.Label(ublframe,text='Total C/S',font=('New Times Roman',12,'bold')).grid(row=0,column=0)
+
+ublcslbl=tk.Label(ublframe,text='',font=('New Times Roman',12,'bold'),
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=6)
+ublcslbl.grid(row=0,column=1)
+
+tk.Label(ublframe,text='Total Amt',font=('New Times Roman',12,'bold')).grid(row=1,column=0)
+
+ublamtlbl=tk.Label(ublframe,text='',font=('New Times Roman',12,'bold'),
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=6)
+ublamtlbl.grid(row=1,column=1)
+
+ublframe.grid(row=0,column=2,padx=2,ipady=5) #UBL close
 
 litteringframe = tk.LabelFrame(summryframe,text='Littering',font=('New Times Roman',10,'bold'),
             fg='blue',padx=10,relief=GROOVE,border=5)
 
 tk.Label(litteringframe,text='Total C/S',font=('New Times Roman',12,'bold')).grid(row=0,column=0)
 
-tk.Label(litteringframe,text='',font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5,bd=3,width=6).grid(row=0,column=1)
+ltcslbl=tk.Label(litteringframe,text='',font=('New Times Roman',12,'bold'),
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=6)
+ltcslbl.grid(row=0,column=1)
 
 tk.Label(litteringframe,text='Total Amt',font=('New Times Roman',12,'bold')).grid(row=1,column=0)
 
-tk.Label(litteringframe,text='',font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5,bd=3,width=6).grid(row=1,column=1)
+ltamtlbl=tk.Label(litteringframe,text='',font=('New Times Roman',12,'bold'),
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=6)
+ltamtlbl.grid(row=1,column=1)
 
-litteringframe.grid(row=0,column=2,padx=2,ipady=5) #Littering close
+litteringframe.grid(row=0,column=3,padx=2,ipady=5) #Littering close
 
 smokingframe = tk.LabelFrame(summryframe,text='Smoking',font=('New Times Roman',10,'bold'),
             fg='blue',padx=10,relief=GROOVE,border=5)
 
 tk.Label(smokingframe,text='Total C/S',font=('New Times Roman',12,'bold')).grid(row=0,column=0)
 
-tk.Label(smokingframe,text='',font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5,bd=3,width=5).grid(row=0,column=1)
+smcslbl=tk.Label(smokingframe,text='',font=('New Times Roman',12,'bold'),
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=5)
+smcslbl.grid(row=0,column=1)
 
 tk.Label(smokingframe,text='Total Amt',font=('New Times Roman',12,'bold')).grid(row=1,column=0)
 
-tk.Label(smokingframe,text='',font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5,bd=3,width=5).grid(row=1,column=1)
+smamtlbl=tk.Label(smokingframe,text='',font=('New Times Roman',12,'bold'),
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=5)
+smamtlbl.grid(row=1,column=1)
 
-smokingframe.grid(row=0,column=3,padx=2,ipady=5)  # Smoking close
+smokingframe.grid(row=0,column=4,padx=2,ipady=5)  # Smoking close
 
 grandtotal = tk.LabelFrame(summryframe,text='Grand Total',font=('New Times Roman',10,'bold'),
             fg='blue',padx=10,relief=GROOVE,border=5)
 
 tk.Label(grandtotal,text='Total C/S',font=('New Times Roman',12,'bold')).grid(row=0,column=0)
 
-tk.Label(grandtotal,text='',font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5,bd=3,width=10).grid(row=0,column=1)
+gtcslbl=tk.Label(grandtotal,text='',font=('New Times Roman',12,'bold'),
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=15)
+gtcslbl.grid(row=0,column=1)
 
 tk.Label(grandtotal,text='Total Amt',font=('New Times Roman',12,'bold')).grid(row=1,column=0)
 
-tk.Label(grandtotal,text='',font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5,bd=3,width=10).grid(row=1,column=1)
+gtamtlbl=tk.Label(grandtotal,text='',font=('New Times Roman',12,'bold'),
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=15)
+gtamtlbl.grid(row=1,column=1)
 
-grandtotal.grid(row=0,column=4,padx=5,ipady=5) # Grand Total close
+grandtotal.grid(row=0,column=5,padx=5,ipady=5) # Grand Total close
 
-slistframe = tk.LabelFrame(summryframe,text='STN Periodical Not received',font=('New Times Roman',10,'bold'),
-            fg='blue',padx=10,relief=GROOVE,border=5)
+# slistframe = tk.LabelFrame(summryframe,text='STN Periodical Not received',font=('New Times Roman',10,'bold'),
+#             fg='blue',padx=10,relief=GROOVE,border=5)
 
-slist = tk.Listbox(slistframe,width=20,height=5)
-slist.pack()
+# slist = tk.Listbox(slistframe,width=20,height=5)
+# slist.pack()
 
-countlist = tk.Label(slistframe,text='',width=10,bd=2,font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5)
-countlist.pack()
+# countlist = tk.Label(slistframe,text='',width=10,bd=2,font=('New Times Roman',12,'bold'),
+#                    relief=GROOVE,padx=10,pady=5)
+# countlist.pack()
 
 
-slistframe.grid(row=0,column=5,padx=2)
+# slistframe.grid(row=0,column=5,padx=2)
 
 summryframe.pack(ipadx=2,ipady=3) # Summery close
 
+
+############################## fetch summery data ############################################
+
+df = pd.read_excel('stnpcdo.xlsx')
+
+#  Suburban total 
+col1 = df.iloc[:,1]
+col2 = df.iloc[:,3]
+col3 = df.iloc[:,5]
+col4 = df.iloc[:,7]
+col9 = df.iloc[:,9]
+subcslbl.config(text=col1.sum()+col2.sum()+col3.sum()+col4.sum()+col9.sum())
+
+col5 = df.iloc[:,2]
+col6 = df.iloc[:,4]
+col7 = df.iloc[:,6]
+col8 = df.iloc[:,8]
+col10 = df.iloc[:,10]
+subamtlbl.config(text=col5.sum()+col6.sum()+col7.sum()+col8.sum()+col10.sum())
+
+#  Main Line total 
+col21 = df.iloc[:,21]
+col23 = df.iloc[:,23]
+mlcslbl.config(text=col21.sum()+col23.sum())
+
+col22 = df.iloc[:,22]
+col24 = df.iloc[:,24]
+mlamtlbl.config(text=col22.sum()+col24.sum())
+
+#  UBL total 
+
+col11 = df.iloc[:,11]
+ublcslbl.config(text=col11.sum())
+
+col12 = df.iloc[:,12]
+ublamtlbl.config(text=col12.sum())
+
+#  Grand total 
+
+col13 = df.iloc[:,13]
+gtcslbl.config(text=col13.sum())
+
+col14 = df.iloc[:,14]
+gtamtlbl.config(text=col14.sum())
+
+#  Littering total 
+
+col17 = df.iloc[:,17]
+ltcslbl.config(text=col17.sum())
+
+col18 = df.iloc[:,18]
+ltamtlbl.config(text=col18.sum())
+
+#  Smokint total 
+
+col19 = df.iloc[:,19]
+smcslbl.config(text=col19.sum())
+
+col20 = df.iloc[:,20]
+smamtlbl.config(text=col20.sum())
 ######################################################################################################
 footer.footer( root=win)
 
