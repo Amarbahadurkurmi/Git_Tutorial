@@ -6,10 +6,6 @@ import os
 import openpyxl as xl
 import pandas as pd
 from datetime import datetime
-import footer
-import a 
-
-
 
 ########################## Start Main Window Programm ############################################
 global acpcs,acdcs,fcpcs,fcdcs,iipcs,mepcs,medcs,smcs,ltcs,staff,wd,tcs
@@ -21,8 +17,7 @@ width= win.winfo_screenwidth()
 height= win.winfo_screenheight()               
 win.geometry("%dx%d" % (width, height))
 
-
-
+df = pd.read_excel('stnpcdo.xlsx')
 ###################################################################################################
 
 def insert_data():
@@ -80,6 +75,7 @@ def insert_data():
     # # Save the Excel file
     workbook.save('stnpcdo.xlsx')
     clear()
+    update_summery()
     messagebox.showinfo("Success", "Data inserted successfully!")
 
 
@@ -88,7 +84,7 @@ def insert_data():
 # df = pd.read_excel('STN_PCDO.xlsx',sheet_name='STN_LIST')
 # stnlist = df.iloc[:,0].tolist()
 
-################################################################################################
+################################# Clear command function ############################################
 def clear():
     acpcs.delete(0,END)
     fcpcs.delete(0,END)
@@ -119,6 +115,8 @@ def clear():
     set_zero()
     stncomb.focus()
 
+################################# Reset and ste Zeo in entry wigdet ############################################
+
 def set_zero():
 
     acpcs.insert(0,0)
@@ -143,7 +141,9 @@ def set_zero():
     acdamt.insert(0,0)
     fcdcs.insert(0,0)
     fcdamt.insert(0,0)
-# Method section
+
+########################### Caluculate the total C/s and Amt #########################################
+
 def show(*args):
     # Cases
     cmb = cmbox.get()
@@ -184,15 +184,15 @@ def show(*args):
 
 def setradio():
     select_value = pradio.get()
-    
 
+################################# Tital label pack ############################################   
 # Tital Lable 
 
 tk.Label(win,text='STATION PCDO ENTRY FORM',font=('New Times Roman',20,'bold'),relief=GROOVE,padx=10,
                       pady=1,bd=5,fg='dark slate blue',bg='sky blue').pack(fill=X,ipadx=5,ipady=2)
 
 
-#####################################################################################################
+############################# Station selection and control pack ####################################
 # Station selection and search form
 
 stnlable = ttk.Labelframe(win)
@@ -233,11 +233,11 @@ tk.Entry(stnlable,font=('Times New Roman',12,'bold'),relief=GROOVE).grid(row=0,c
 srchbutton = tk.Button(stnlable,text='Search',padx=10,pady=5,font=('Times New Roman',12,'bold'),
                       fg='brown',bg='yellow').grid(row=0,column=9,padx=10,pady=10)
 
-clrhbutton = tk.Button(stnlable,text='CLEAR',padx=10,pady=5,font=('Times New Roman',12,'bold'),
-                      fg='brown',bg='yellow',command=clear).grid(row=0,column=10,padx=10,pady=10)
+clrhbutton = tk.Button(stnlable,text='Clear',padx=10,pady=5,font=('Times New Roman',12,'bold'),
+                      fg='white',bg='brown',command=clear).grid(row=0,column=10,padx=10,pady=10)
 
 stnlable.pack()
-##########################################################################################################
+###################################### Main Entry pack #############################################
 # Entry form
 mainframe = tk.LabelFrame(win,text='Main Entry form',font=('New Times Roman',10,'bold'),
             fg='blue',padx=10,relief=GROOVE,border=5)
@@ -495,16 +495,17 @@ medamt.bind("<KeyRelease>",show)
 
 meframe.grid(row=0,column=5,padx=10,pady=10,ipadx=5) # ME Frame close
 
-############################################################################################################
 mainframe.pack()  #Main Frame close
 
-# ################################# Summery ##################################################
+# ################################# Summery frame pack ##################################################
 
 summryframe = tk.LabelFrame(win,text='SUMMERY',font=('New Times Roman',10,'bold'),
             fg='blue',padx=10,relief=GROOVE,border=5)
 
 suburbanframe = tk.LabelFrame(summryframe,text='Suburban',font=('New Times Roman',10,'bold'),
             fg='blue',padx=10,relief=GROOVE,border=5)
+
+# Suburban Total
 
 tk.Label(suburbanframe,text='Total C/S',font=('New Times Roman',12,'bold')).grid(row=0,column=0)
 
@@ -520,6 +521,8 @@ subamtlbl=tk.Label(suburbanframe,text='',font=('New Times Roman',12,'bold'),
 subamtlbl.grid(row=1,column=1)
 
 suburbanframe.grid(row=0,column=0,padx=2,ipady=5) # Suburban Close
+
+# Main Line  Total
 
 mainlineframe = tk.LabelFrame(summryframe,text='Mainline',font=('New Times Roman',10,'bold'),
             fg='blue',padx=10,relief=GROOVE,border=5)
@@ -538,6 +541,8 @@ mlamtlbl.grid(row=1,column=1)
 
 mainlineframe.grid(row=0,column=1,padx=2,ipady=5) # Main line close
 
+# UBL Total
+
 ublframe = tk.LabelFrame(summryframe,text='UBL',font=('New Times Roman',10,'bold'),
             fg='blue',padx=10,relief=GROOVE,border=5)
 
@@ -554,6 +559,8 @@ ublamtlbl=tk.Label(ublframe,text='',font=('New Times Roman',12,'bold'),
 ublamtlbl.grid(row=1,column=1)
 
 ublframe.grid(row=0,column=2,padx=2,ipady=5) #UBL close
+
+# Littering Total
 
 litteringframe = tk.LabelFrame(summryframe,text='Littering',font=('New Times Roman',10,'bold'),
             fg='blue',padx=10,relief=GROOVE,border=5)
@@ -572,6 +579,8 @@ ltamtlbl.grid(row=1,column=1)
 
 litteringframe.grid(row=0,column=3,padx=2,ipady=5) #Littering close
 
+# smokint Total
+
 smokingframe = tk.LabelFrame(summryframe,text='Smoking',font=('New Times Roman',10,'bold'),
             fg='blue',padx=10,relief=GROOVE,border=5)
 
@@ -588,6 +597,8 @@ smamtlbl=tk.Label(smokingframe,text='',font=('New Times Roman',12,'bold'),
 smamtlbl.grid(row=1,column=1)
 
 smokingframe.grid(row=0,column=4,padx=2,ipady=5)  # Smoking close
+
+# Grand  Total
 
 grandtotal = tk.LabelFrame(summryframe,text='Grand Total',font=('New Times Roman',10,'bold'),
             fg='blue',padx=10,relief=GROOVE,border=5)
@@ -621,69 +632,162 @@ grandtotal.grid(row=0,column=5,padx=5,ipady=5) # Grand Total close
 
 summryframe.pack(ipadx=2,ipady=3) # Summery close
 
+################################ AC / FC Bifercation ############################################
+
+acfcframe = tk.Frame(win,border=5)
+
+aclabelf=tk.LabelFrame(acfcframe,text='AC PWT',font=('New Times Roman',8,'bold'),fg='green')
+tk.Label(aclabelf,text=' C/S',font=('New Times Roman',8,'bold')).grid(row=0,column=0)
+acpcslabel=tk.Label(aclabelf,text='',font=('New Times Roman',8,'bold'),
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=10)
+acpcslabel.grid(row=0,column=1)
+
+tk.Label(aclabelf,text='Amount',font=('New Times Roman',8,'bold')).grid(row=0,column=2)
+acpamtlabel=tk.Label(aclabelf,text='',font=('New Times Roman',8,'bold'),
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=10)
+acpamtlabel.grid(row=0,column=3)
+aclabelf.grid(row=0,column=0)
+#_______________________________________________________________________________________________
+
+acdlabelf=tk.LabelFrame(acfcframe,text='AC Diff',font=('New Times Roman',8,'bold'),fg='green')
+tk.Label(acdlabelf,text=' C/S',font=('New Times Roman',8,'bold')).grid(row=0,column=0)
+acdcslabel=tk.Label(acdlabelf,text='',font=('New Times Roman',8,'bold'),
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=10)
+acdcslabel.grid(row=0,column=1)
+
+tk.Label(acdlabelf,text='Amount',font=('New Times Roman',8,'bold')).grid(row=0,column=2)
+acdamtlabel=tk.Label(acdlabelf,text='',font=('New Times Roman',8,'bold'),
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=10)
+acdamtlabel.grid(row=0,column=3)
+acdlabelf.grid(row=0,column=1)
+
+############################### FC ##########################################
+
+fclabelf=tk.LabelFrame(acfcframe,text='FC PWT',font=('New Times Roman',8,'bold'),fg='green')
+tk.Label(fclabelf,text=' C/S',font=('New Times Roman',8,'bold')).grid(row=0,column=0)
+fcpcslabel=tk.Label(fclabelf,text='',font=('New Times Roman',8,'bold'),
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=10)
+fcpcslabel.grid(row=0,column=1)
+
+tk.Label(fclabelf,text='Amount',font=('New Times Roman',8,'bold')).grid(row=0,column=2)
+fcpamtlabel=tk.Label(fclabelf,text='',font=('New Times Roman',8,'bold'),
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=10)
+fcpamtlabel.grid(row=0,column=3)
+fclabelf.grid(row=0,column=2,padx=30)
+#_______________________________________________________________________________________________
+
+fcdlabelf=tk.LabelFrame(acfcframe,text='FC Diff',font=('New Times Roman',8,'bold'),fg='green')
+tk.Label(fcdlabelf,text=' C/S',font=('New Times Roman',8,'bold')).grid(row=0,column=0)
+fcdpcslabel=tk.Label(fcdlabelf,text='',font=('New Times Roman',8,'bold'),
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=10)
+fcdpcslabel.grid(row=0,column=1)
+
+tk.Label(fcdlabelf,text='Amount',font=('New Times Roman',8,'bold')).grid(row=0,column=2)
+fcdamtlabel=tk.Label(fcdlabelf,text='',font=('New Times Roman',8,'bold'),
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=10)
+fcdamtlabel.grid(row=0,column=3)
+fcdlabelf.grid(row=0,column=3)
+
+
+acfcframe.pack(ipadx=2,ipady=3) # Summery close
+
 
 ############################## fetch summery data ############################################
 
-df = pd.read_excel('stnpcdo.xlsx')
+def update_summery():
+    df = pd.read_excel('stnpcdo.xlsx')
 
-#  Suburban total 
-col1 = df.iloc[:,1]
-col2 = df.iloc[:,3]
-col3 = df.iloc[:,5]
-col4 = df.iloc[:,7]
-col9 = df.iloc[:,9]
-subcslbl.config(text=col1.sum()+col2.sum()+col3.sum()+col4.sum()+col9.sum())
+    #  Suburban total 
+    col1 = df.iloc[:,1]
+    acpcslabel.config(text=col1.sum())
+    col2 = df.iloc[:,3]
+    acdcslabel.config(text=col2.sum())
+    col3 = df.iloc[:,5]
+    fcpcslabel.config(text=col3.sum())
+    col4 = df.iloc[:,7]
+    fcdpcslabel.config(text=col4.sum())
+    col9 = df.iloc[:,9]
+    subcslbl.config(text=col1.sum()+col2.sum()+col3.sum()+col4.sum()+col9.sum())
 
-col5 = df.iloc[:,2]
-col6 = df.iloc[:,4]
-col7 = df.iloc[:,6]
-col8 = df.iloc[:,8]
-col10 = df.iloc[:,10]
-subamtlbl.config(text=col5.sum()+col6.sum()+col7.sum()+col8.sum()+col10.sum())
+    col5 = df.iloc[:,2]
+    acpamtlabel.config(text=col5.sum())
+    col6 = df.iloc[:,4]
+    acdamtlabel.config(text=col6.sum())
+    col7 = df.iloc[:,6]
+    fcpamtlabel.config(text=col7.sum())
+    col8 = df.iloc[:,8]
+    fcdamtlabel.config(text=col8.sum())
+    col10 = df.iloc[:,10]
+    subamtlbl.config(text=col5.sum()+col6.sum()+col7.sum()+col8.sum()+col10.sum())
 
-#  Main Line total 
-col21 = df.iloc[:,21]
-col23 = df.iloc[:,23]
-mlcslbl.config(text=col21.sum()+col23.sum())
+    #  Main Line total 
+    col21 = df.iloc[:,21]
+    col23 = df.iloc[:,23]
+    mlcslbl.config(text=col21.sum()+col23.sum())
 
-col22 = df.iloc[:,22]
-col24 = df.iloc[:,24]
-mlamtlbl.config(text=col22.sum()+col24.sum())
+    col22 = df.iloc[:,22]
+    col24 = df.iloc[:,24]
+    mlamtlbl.config(text=col22.sum()+col24.sum())
 
-#  UBL total 
+    #  UBL total 
 
-col11 = df.iloc[:,11]
-ublcslbl.config(text=col11.sum())
+    col11 = df.iloc[:,11]
+    ublcslbl.config(text=col11.sum())
 
-col12 = df.iloc[:,12]
-ublamtlbl.config(text=col12.sum())
+    col12 = df.iloc[:,12]
+    ublamtlbl.config(text=col12.sum())
 
-#  Grand total 
+    #  Grand total 
 
-col13 = df.iloc[:,13]
-gtcslbl.config(text=col13.sum())
+    col13 = df.iloc[:,13]
+    gtcslbl.config(text=col13.sum())
 
-col14 = df.iloc[:,14]
-gtamtlbl.config(text=col14.sum())
+    col14 = df.iloc[:,14]
+    gtamtlbl.config(text=col14.sum())
 
-#  Littering total 
+    #  Littering total 
 
-col17 = df.iloc[:,17]
-ltcslbl.config(text=col17.sum())
+    col17 = df.iloc[:,17]
+    ltcslbl.config(text=col17.sum())
 
-col18 = df.iloc[:,18]
-ltamtlbl.config(text=col18.sum())
+    col18 = df.iloc[:,18]
+    ltamtlbl.config(text=col18.sum())
 
-#  Smokint total 
+    #  Smokint total 
 
-col19 = df.iloc[:,19]
-smcslbl.config(text=col19.sum())
+    col19 = df.iloc[:,19]
+    smcslbl.config(text=col19.sum())
 
-col20 = df.iloc[:,20]
-smamtlbl.config(text=col20.sum())
+    col20 = df.iloc[:,20]
+    smamtlbl.config(text=col20.sum())
+
 ######################################################################################################
-footer.footer( root=win)
 
+# Update time function
+
+def update_time():
+    global datelbl
+    # Get the current date and time
+    current_time = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+    
+    # Update the label with the current date and time
+    datelbl.config(text=current_time)
+    
+    # Schedule the update_time function to be called again after 1000 milliseconds (1 second)
+    datelbl.after(1000, update_time)
+
+################################# Date and copy right pack ########################################
+
+cpframe = tk.LabelFrame(win,)
+copyrightlbl = tk.Label(cpframe,text='© 2024 CSDN Technology',font=('New Times Roman',10,'bold'),
+                                fg='red',justify=LEFT,padx=200).grid(row=0,column=0)
+
+datelbl = tk.Label(cpframe,font=('New Times Roman',10,'bold'),justify=RIGHT,padx=600)
+datelbl.grid(row=0,column=1)    
+datelbl.config(text=update_time())
+cpframe.pack(pady=2,fill=X)
+
+update_summery()
 win.mainloop()  # Main Loop close
 
 ######################################################################################################

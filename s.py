@@ -1,43 +1,64 @@
-import pandas as pd
 import tkinter as tk
-from tkinter import filedialog, messagebox
+from tkinter import ttk
+import pandas as pd
 
-def load_excel_and_sum_column():
-    # Prompt the user to select an Excel file
-    # file_path = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx;*.xls")])
-    # if not file_path:
-    #     return
+# Function to load Excel data
+def load_excel(file_path):
+    df = pd.read_excel(file_path)
+    return df
 
-    # Load the Excel file into a DataFrame
-    df = pd.read_excel('stnpcdo.xlsx')
+# Function to search for a value in the second column and display the data
+def search_data():
+    search_value = search_entry.get()
+    matching_row = df[df.iloc[:, 1] == search_value]
+    
+    if not matching_row.empty:
+        for i, column in enumerate(df.columns):
+            entry_widgets[i].delete(0, tk.END)
+            entry_widgets[i].insert(0, str(matching_row.iloc[0, i]))
+    else:
+        for entry in entry_widgets:
+            entry.delete(0, tk.END)
+        result_label.config(text="No matching data found.")
 
-    # Prompt the user to input the column name
-    column_name = column_entry.get()
-    if column_name not in df.columns:
-        messagebox.showerror("Error", f"Column '{column_name}' not found in the Excel sheet.")
-        return
+# Load the Excel file
+file_path = "stnpcdo.xlsx"  # Replace with your Excel file path
+df = load_excel(file_path)
 
-    # Calculate the sum of the specified column
-    column_sum = df[column_name].sum()
-
-    # Update the label to display the result
-    result_label.config(text=f"Sum of '{column_name}': {column_sum}")
-
-# Create the main application window
+# Create the Tkinter window
 root = tk.Tk()
-root.title("Excel Column Sum Calculator")
+root.title("Excel Data Search")
 
-# Create and place widgets
-tk.Label(root, text="Select an Excel file and enter the column name:").pack(pady=10)
+# Create a frame for the search bar
+search_frame = ttk.Frame(root)
+search_frame.pack(pady=10)
 
-tk.Button(root, text="Select Excel File", command=load_excel_and_sum_column).pack(pady=5)
+# Add a search label and entry
+search_label = ttk.Label(search_frame, text="Search by Second Column:")
+search_label.pack(side=tk.LEFT, padx=5)
+search_entry = ttk.Entry(search_frame)
+search_entry.pack(side=tk.LEFT, padx=5)
 
-tk.Label(root, text="Column Name:").pack(pady=5)
-column_entry = tk.Entry(root)
-column_entry.pack(pady=5)
+# Add a search button
+search_button = ttk.Button(search_frame, text="Search", command=search_data)
+search_button.pack(side=tk.LEFT, padx=5)
 
-result_label = tk.Label(root, text="")
-result_label.pack(pady=20)
+# Create a frame for the entry widgets
+entry_frame = ttk.Frame(root)
+entry_frame.pack(pady=10)
 
-# Run the application
+# Create entry widgets for each column
+entry_widgets = []
+for column in df.columns:
+    label = ttk.Label(entry_frame, text=column)
+    label.pack(pady=5)
+    entry = ttk.Entry(entry_frame, width=50)
+    entry.pack(pady=5)
+    entry_widgets.append(entry)
+
+# Add a label for search results
+result_label = ttk.Label(root, text="")
+result_label.pack(pady=10)
+
+# Start the Tkinter event loop
 root.mainloop()
