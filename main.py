@@ -1,15 +1,16 @@
 # *********************************************************************************************
 from tkinter import *
-from tkinter import messagebox,ttk
+from tkinter import messagebox,ttk,Menu
 import tkinter as tk
 import os
 import openpyxl as xl
 import pandas as pd
-from datetime import datetime
+from datetime import datetime,timedelta
+import menu
 
 ########################## Start Main Window Programm ############################################
 global acpcs,acdcs,fcpcs,fcdcs,iipcs,mepcs,medcs,smcs,ltcs,staff,wd,tcs
-global acdamt,acpamt,fcpamt,fcdamt,iipamt,mepamt,medamt,tamt,cmb,subcslbl
+global acdamt,acpamt,fcpamt,fcdamt,iipamt,mepamt,medamt,tamt,cmb,subcslbl,cmbox
 
 win = tk.Tk()
 win.title("Staion PCDO")
@@ -17,72 +18,93 @@ width= win.winfo_screenwidth()
 height= win.winfo_screenheight()               
 win.geometry("%dx%d" % (width, height))
 
-df = pd.read_excel('stnpcdo.xlsx')
+menu.menub(root=win,tk=tk)
+
+
+################################ Search command #####################################
+def validate(event):
+    df = pd.read_excel('stnpcdo.xlsx')  # Make sure your file path is correct
+
+    enter_stn_list = df.iloc[:,0].tolist()
+
+    for i in enter_stn_list:
+        if i==cmbox.get():
+            messagebox.showerror('Error','Station alredy entered')
+        
+
+############### Mthod for month and year ###############################
+
+def get_display_date():
+    today = datetime.today()
+    if today.day == 1:
+        # Move to the last day of the previous month
+        previous_month = today.replace(day=1) - timedelta(days=1)
+        display_date = previous_month.strftime("%B %Y")
+    else:
+        display_date = today.strftime("%B %Y")
+    return display_date
 ###################################################################################################
 
 def insert_data():
-#     # Get data from Entry widgets
-    list1 = cmbox.get()
-    acs= int(acpcs.get())
-    fcs = int(fcpcs.get())
-    iics = int(iipcs.get())
-    ucs = int(ublcs.get())
-    mec = int(mepcs.get())
-    acdc = int(acdcs.get())
-    fcdc = int(fcdcs.get())
-    medc = int(medcs.get())
-    stf = int(staff.get())
-    w = int(wd.get())
-    ltc = int(ltcs.get())
-    smc = int(smcs.get())
-    
-    tcs= totalcs.cget('text')
-    
-    aca= int(acpamt.get())
-    fca = int(fcpamt.get())
-    iia = int(iipamt.get())
-    ua = int(ublamt.get())
-    mea = int(mepamt.get())
-    acda = int(acdamt.get())
-    fcda = int(fcdamt.get())
-    meda = int(medamt.get())
-    lta = int(ltamt.get())
-    sma =int(smamt.get())
-    prd = pradio.get()
-    tamt = totalamt.cget('text')
-    
-#     # # Load the Excel file or create a new one if it doesn't exist
-    
-    try:
-        workbook = xl.load_workbook('stnpcdo.xlsx')
-    except FileNotFoundError:
-        workbook = xl.Workbook()
-        workbook.remove(workbook.active)  # Remove the default sheet
-        sheet = workbook.create_sheet(title='Sheet1')
-        sheet.append(['STN', 'AC_PWT_CS', 'AC_PWT_AMT','AC_DIFF_CS', 'AC_DIFF_AMT',
-                      'FC_PWT_CS','FC_DIFF_AMT', 'FC_DIFF_CS','FC_PWT_AMT',
-                      'II_PWT_CS','II_PWT_AMT', 'UBL_CS','UBL_AMT','TOTAL_CS','TOTAL_AMT',
-                      'STAFF','WD','LITT_CS','LITT_AMT', 'SM_CS','SM_AMT',
-                      'ME_PWT_CS', 'ME_PWT_AMT','ME_DIFF_CS', 'ME_DIFF_AMT','PERIOD'])  # Add headers
-    else:
-        sheet = workbook.active
+#     # Get data from Entry widgets 
+        
+        list1 = cmbox.get()
+        acs= int(acpcs.get())
+        fcs = int(fcpcs.get())
+        iics = int(iipcs.get())
+        ucs = int(ublcs.get())
+        mec = int(mepcs.get())
+        acdc = int(acdcs.get())
+        fcdc = int(fcdcs.get())
+        medc = int(medcs.get())
+        stf = int(staff.get())
+        w = int(wd.get())
+        ltc = int(ltcs.get())
+        smc = int(smcs.get())
+        
+        tcs= totalcs.cget('text')
+        
+        aca= int(acpamt.get())
+        fca = int(fcpamt.get())
+        iia = int(iipamt.get())
+        ua = int(ublamt.get())
+        mea = int(mepamt.get())
+        acda = int(acdamt.get())
+        fcda = int(fcdamt.get())
+        meda = int(medamt.get())
+        lta = int(ltamt.get())
+        sma =int(smamt.get())
+        prd = pradio.get()
+        tamt = totalamt.cget('text')
+        
+    #     # # Load the Excel file or create a new one if it doesn't exist
+        
+        try:
+            workbook = xl.load_workbook('stnpcdo.xlsx')
+        except FileNotFoundError:
+            workbook = xl.Workbook()
+            workbook.remove(workbook.active)  # Remove the default sheet
+            sheet = workbook.create_sheet(title='Sheet1')
+            sheet.append(['STN', 'AC_PWT_CS', 'AC_PWT_AMT','AC_DIFF_CS', 'AC_DIFF_AMT',
+                        'FC_PWT_CS','FC_DIFF_AMT', 'FC_DIFF_CS','FC_PWT_AMT',
+                        'II_PWT_CS','II_PWT_AMT', 'UBL_CS','UBL_AMT','TOTAL_CS','TOTAL_AMT',
+                        'STAFF','WD','LITT_CS','LITT_AMT', 'SM_CS','SM_AMT',
+                        'ME_PWT_CS', 'ME_PWT_AMT','ME_DIFF_CS', 'ME_DIFF_AMT','PERIOD'])  # Add headers
+        else:
+            sheet = workbook.active
 
-    
-        # Append the new data
-    sheet.append([list1,acs,aca,acdc,acda,fcs,fca,fcdc,fcda,iics,iia,ucs,ua,tcs,tamt,stf,w,ltc,lta,
-                  smc,sma,mec,mea,medc,meda,prd])
-    
-    # # Save the Excel file
-    workbook.save('stnpcdo.xlsx')
-    clear()
-    update_summery()
-    messagebox.showinfo("Success", "Data inserted successfully!")
+        
+            # Append the new data
+        sheet.append([list1,acs,aca,acdc,acda,fcs,fca,fcdc,fcda,iics,iia,ucs,ua,tcs,tamt,stf,w,ltc,lta,
+                    smc,sma,mec,mea,medc,meda,prd])
+        
+        # # Save the Excel file
+        workbook.save('stnpcdo.xlsx')
+        clear()
+        update_summery()
+        
+        messagebox.showinfo("Success", "Data inserted successfully!")
 
-
-# ************************** Combobox List integrete with Excelsheet ***************************
-
-# df = pd.read_excel('STN_PCDO.xlsx',sheet_name='STN_LIST')
-# stnlist = df.iloc[:,0].tolist()
 
 ################################# Clear command function ############################################
 def clear():
@@ -186,28 +208,25 @@ def setradio():
     select_value = pradio.get()
 
 ################################# Tital label pack ############################################   
-# Tital Lable 
 
 tk.Label(win,text='STATION PCDO ENTRY FORM',font=('New Times Roman',20,'bold'),relief=GROOVE,padx=10,
                       pady=1,bd=5,fg='dark slate blue',bg='sky blue').pack(fill=X,ipadx=5,ipady=2)
 
 
 ############################# Station selection and control pack ####################################
-# Station selection and search form
 
-stnlable = ttk.Labelframe(win)
+stnlable = ttk.Labelframe(win,)
 
 tk.Label(stnlable,text='Station Name ',font=('Times New Roman',12,'bold'),
                      borderwidth=10,padx=20).grid(row=0,column=0)
 cmbox= tk.StringVar()
-list1 = ['CSMT','MSD','SNRD','BY','CHG','CRD','PR','DR','MTN','SION','CLA','VVH','GC','VK','KJMG',
-         'BND','NHU','MLND','TNA','KLVA','MBQ','DW','KOPR','DI','THK','KYN','SHAD','ABY','TLA','KDVL',
-         'ASO','KSRA','VLDI','ULNR','ABH','BUD','NRL','KJT','KHPI','LNL','DKRD','RRD','CTGN','SVE','VDLR',
-         'KCE','GTBN','CHF','TKNG','CMBR','GV','MNKD','VSH','SNCR','JNJ','NEU','SWDV','BEPR','KHAG','MANR',
-         'KNDS','PNVL','PEN','ROHA','KARP','BMDR','BIRD','AIRL','RABE','GNSL','KPHN']
+
+df= pd.read_excel('stnlist.xlsx')
+list1 = df.iloc[:,0].tolist()
 stncomb = ttk.Combobox(stnlable,values=list1,textvariable=cmbox)
 stncomb.grid(row=0,column=1,padx=10)
-stncomb.set(list1[0])
+# stncomb.set(list1[0])
+stncomb.bind("<<ComboboxSelected>>",validate)
 
 tk.Label(stnlable,text='Select Period',font=('Times New Roman',12,'bold')).grid(row=0,column=2,padx=10)
 
@@ -225,16 +244,14 @@ pradio.set(1)
 addbtn = tk.Button(stnlable,text='ADD',command=insert_data,padx=10,pady=5,font=('Times New Roman',12,'bold'),
                       fg='brown',bg='light green').grid(row=0,column=6,padx=10,pady=10)
 
-editbtn = tk.Button(stnlable,text='EDIT',padx=10,pady=5,font=('Times New Roman',12,'bold'),
-                      fg='brown',bg='orange').grid(row=0,column=7,padx=10,pady=10)
-
-tk.Entry(stnlable,font=('Times New Roman',12,'bold'),relief=GROOVE).grid(row=0,column=8,padx=10)
-
-srchbutton = tk.Button(stnlable,text='Search',padx=10,pady=5,font=('Times New Roman',12,'bold'),
-                      fg='brown',bg='yellow').grid(row=0,column=9,padx=10,pady=10)
 
 clrhbutton = tk.Button(stnlable,text='Clear',padx=10,pady=5,font=('Times New Roman',12,'bold'),
-                      fg='white',bg='brown',command=clear).grid(row=0,column=10,padx=10,pady=10)
+                      fg='black',bg='white',command=clear).grid(row=0,column=7,padx=10,pady=10)
+
+monthyear = tk.Label(stnlable,text=get_display_date(),font=('Times New Roman',15,'bold'),
+                     padx=20,border=3,relief=FLAT,fg="brown").grid(row=0,column=8)
+
+
 
 stnlable.pack()
 ###################################### Main Entry pack #############################################
@@ -782,7 +799,7 @@ cpframe = tk.LabelFrame(win,)
 copyrightlbl = tk.Label(cpframe,text='© 2024 CSDN Technology',font=('New Times Roman',10,'bold'),
                                 fg='red',justify=LEFT,padx=200).grid(row=0,column=0)
 
-datelbl = tk.Label(cpframe,font=('New Times Roman',10,'bold'),justify=RIGHT,padx=600)
+datelbl = tk.Label(cpframe,font=('New Times Roman',10,'bold'),justify=RIGHT,padx=600,fg='blue')
 datelbl.grid(row=0,column=1)    
 datelbl.config(text=update_time())
 cpframe.pack(pady=2,fill=X)
