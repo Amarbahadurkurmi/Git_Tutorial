@@ -9,7 +9,7 @@ from datetime import datetime,timedelta
 import menu
 
 ########################## Start Main Window Programm ############################################
-global acpcs,acdcs,fcpcs,fcdcs,iipcs,mepcs,medcs,smcs,ltcs,staff,wd,tcs
+global acpcs,acdcs,fcpcs,fcdcs,iipcs,mepcs,medcs,smcs,ltcs,staff,wd,tcs,mnth,yer
 global acdamt,acpamt,fcpamt,fcdamt,iipamt,mepamt,medamt,tamt,cmb,subcslbl,cmbox
 
 win = tk.Tk()
@@ -34,15 +34,25 @@ def validate(event):
 
 ############### Mthod for month and year ###############################
 
-def get_display_date():
+def get_display_month():
     today = datetime.today()
     if today.day == 1:
         # Move to the last day of the previous month
         previous_month = today.replace(day=1) - timedelta(days=1)
-        display_date = previous_month.strftime("%B %Y")
+        display_month = previous_month.strftime("%B")
     else:
-        display_date = today.strftime("%B %Y")
-    return display_date
+        display_month = today.strftime("%B")
+    return display_month
+
+def get_display_year():
+    today = datetime.today()
+    if today.day == 1:
+        # Move to the last day of the previous month
+        previous_year = today.replace(month=1) - timedelta(month=1)
+        display_year = previous_month.strftime("%Y")
+    else:
+        display_year = today.strftime("%Y")
+    return display_year
 ###################################################################################################
 
 def insert_data():
@@ -76,6 +86,8 @@ def insert_data():
         sma =int(smamt.get())
         prd = pradio.get()
         tamt = totalamt.cget('text')
+        mnth = month.cget('text')
+        yer = year.cget('text')
         
     #     # # Load the Excel file or create a new one if it doesn't exist
         
@@ -89,14 +101,14 @@ def insert_data():
                         'FC_PWT_CS','FC_DIFF_AMT', 'FC_DIFF_CS','FC_PWT_AMT',
                         'II_PWT_CS','II_PWT_AMT', 'UBL_CS','UBL_AMT','TOTAL_CS','TOTAL_AMT',
                         'STAFF','WD','LITT_CS','LITT_AMT', 'SM_CS','SM_AMT',
-                        'ME_PWT_CS', 'ME_PWT_AMT','ME_DIFF_CS', 'ME_DIFF_AMT','PERIOD'])  # Add headers
+                        'ME_PWT_CS', 'ME_PWT_AMT','ME_DIFF_CS', 'ME_DIFF_AMT','PERIOD','MONTH','YEAR'])  # Add headers
         else:
             sheet = workbook.active
 
         
             # Append the new data
         sheet.append([list1,acs,aca,acdc,acda,fcs,fca,fcdc,fcda,iics,iia,ucs,ua,tcs,tamt,stf,w,ltc,lta,
-                    smc,sma,mec,mea,medc,meda,prd])
+                    smc,sma,mec,mea,medc,meda,prd,mnth,yer])
         
         # # Save the Excel file
         workbook.save('stnpcdo.xlsx')
@@ -248,8 +260,13 @@ addbtn = tk.Button(stnlable,text='ADD',command=insert_data,padx=10,pady=5,font=(
 clrhbutton = tk.Button(stnlable,text='Clear',padx=10,pady=5,font=('Times New Roman',12,'bold'),
                       fg='black',bg='white',command=clear).grid(row=0,column=7,padx=10,pady=10)
 
-monthyear = tk.Label(stnlable,text=get_display_date(),font=('Times New Roman',15,'bold'),
-                     padx=20,border=3,relief=FLAT,fg="brown").grid(row=0,column=8)
+month = tk.Label(stnlable,text=get_display_month(),font=('Times New Roman',15,'bold'),
+                     padx=20,border=3,relief=FLAT,fg="brown")
+month.grid(row=0,column=8)
+
+year = tk.Label(stnlable,text=get_display_year(),font=('Times New Roman',15,'bold'),
+                     padx=20,border=3,relief=FLAT,fg="brown")
+year.grid(row=0,column=9)
 
 
 
