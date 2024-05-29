@@ -21,8 +21,8 @@ win.geometry("%dx%d" % (width, height))
 menu.menub(root=win,tk=tk)
 
 
-################################ Search command #####################################
-def validate(event):
+################################ Staion selcection command #####################################
+def validate_cmbox(event):
     df = pd.read_excel('stnpcdo.xlsx')  # Make sure your file path is correct
 
     enter_stn_list = df.iloc[:,0].tolist()
@@ -57,7 +57,13 @@ def get_display_year():
 
 def insert_data():
 #     # Get data from Entry widgets 
-        
+    if (stncomb.get()==''):
+        messagebox.showerror('Error','Please Select station')
+    elif((totalcs.cget('text')=='' or 0) and (totalamt.cget('text')=='' or 0)):
+        messagebox.showerror('Error','Please Enter Minimum 1 C/S and Amount ')
+    elif((staff.get()=='' or 0) and (wd.get()==' or 0')):
+        messagebox.showerror('Error','Please Enter staff and working days')
+    else:   
         list1 = cmbox.get()
         acs= int(acpcs.get())
         fcs = int(fcpcs.get())
@@ -238,7 +244,7 @@ list1 = df.iloc[:,0].tolist()
 stncomb = ttk.Combobox(stnlable,values=list1,textvariable=cmbox)
 stncomb.grid(row=0,column=1,padx=10)
 # stncomb.set(list1[0])
-stncomb.bind("<<ComboboxSelected>>",validate)
+stncomb.bind("<<ComboboxSelected>>",validate_cmbox)
 
 tk.Label(stnlable,text='Select Period',font=('Times New Roman',12,'bold')).grid(row=0,column=2,padx=10)
 
@@ -640,13 +646,13 @@ grandtotal = tk.LabelFrame(summryframe,text='Grand Total',font=('New Times Roman
 tk.Label(grandtotal,text='Total C/S',font=('New Times Roman',12,'bold')).grid(row=0,column=0)
 
 gtcslbl=tk.Label(grandtotal,text='',font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5,bd=3,width=15)
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=12)
 gtcslbl.grid(row=0,column=1)
 
 tk.Label(grandtotal,text='Total Amt',font=('New Times Roman',12,'bold')).grid(row=1,column=0)
 
 gtamtlbl=tk.Label(grandtotal,text='',font=('New Times Roman',12,'bold'),
-                   relief=GROOVE,padx=10,pady=5,bd=3,width=15)
+                   relief=GROOVE,padx=10,pady=5,bd=3,width=12)
 gtamtlbl.grid(row=1,column=1)
 
 grandtotal.grid(row=0,column=5,padx=5,ipady=5) # Grand Total close
