@@ -5,18 +5,19 @@ import stn_not_received_prd
 def menub(root,tk):
     
     def pcdo_window():
-        # welcome.open_new_window(root=root,tk=tk)
-        messagebox.showinfo("Info", "Open File Selected")
+        root.destroy()
+        import pcdo
 
     def mcdo_window():
-        messagebox.showinfo("Info", "Open File Selected")
+        root.destroy()
+        import mcdo
 
     def pcdo_view():
-        
-        messagebox.showinfo("Info", "Save File Selected")
-    
+        root.destroy()
+        import pcdo_list
     def mcdo_view():
-        messagebox.showinfo("Info", "Save File Selected")
+        root.destroy()
+        import mcdo_list
     
     def about_us():
         messagebox.showinfo("Info", "Save File Selected")
@@ -40,7 +41,7 @@ def menub(root,tk):
     data_menu = tk.Menu(menu_bar, tearoff=0)
     menu_bar.add_cascade(label="Data", menu=data_menu)
     data_menu.add_command(label="STN NR", command=stn_not_received_prd.stn_nr)
-    data_menu.add_command(label="Batch NR", command=mcdo_view)
+    data_menu.add_command(label="Batch NR", command=stn_not_received_prd.batch_nr)
     
     view_menu = tk.Menu(menu_bar, tearoff=0)
     menu_bar.add_cascade(label="View", menu=view_menu)

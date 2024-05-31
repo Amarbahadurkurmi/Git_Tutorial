@@ -55,51 +55,55 @@ def get_display_year():
     return display_year
 ###################################################################################################
 
-def insert_data():
-#     # Get data from Entry widgets 
+def validate():
     if (stncomb.get()==''):
         messagebox.showerror('Error','Please Select station')
     elif((totalcs.cget('text')=='' or 0) and (totalamt.cget('text')=='' or 0)):
         messagebox.showerror('Error','Please Enter Minimum 1 C/S and Amount ')
-    elif((staff.get()=='' or 0) and (wd.get()==' or 0')):
+    elif((staff.get()=='' or 0) and (wd.get()==' 'or 0)):
         messagebox.showerror('Error','Please Enter staff and working days')
-    else:   
-        list1 = cmbox.get()
-        acs= int(acpcs.get())
-        fcs = int(fcpcs.get())
-        iics = int(iipcs.get())
-        ucs = int(ublcs.get())
-        mec = int(mepcs.get())
-        acdc = int(acdcs.get())
-        fcdc = int(fcdcs.get())
-        medc = int(medcs.get())
-        stf = int(staff.get())
-        w = int(wd.get())
-        ltc = int(ltcs.get())
-        smc = int(smcs.get())
+    else:
+        insert_data()
+
+def insert_data():
+#      Get data from Entry widgets 
+    
+    list1 = cmbox.get()
+    acs= int(acpcs.get())
+    fcs = int(fcpcs.get())
+    iics = int(iipcs.get())
+    ucs = int(ublcs.get())
+    mec = int(mepcs.get())
+    acdc = int(acdcs.get())
+    fcdc = int(fcdcs.get())
+    medc = int(medcs.get())
+    stf = int(staff.get())
+    w = int(wd.get())
+    ltc = int(ltcs.get())
+    smc = int(smcs.get())
         
-        tcs= totalcs.cget('text')
+    tcs= totalcs.cget('text')
         
-        aca= int(acpamt.get())
-        fca = int(fcpamt.get())
-        iia = int(iipamt.get())
-        ua = int(ublamt.get())
-        mea = int(mepamt.get())
-        acda = int(acdamt.get())
-        fcda = int(fcdamt.get())
-        meda = int(medamt.get())
-        lta = int(ltamt.get())
-        sma =int(smamt.get())
-        prd = pradio.get()
-        tamt = totalamt.cget('text')
-        mnth = month.cget('text')
-        yer = year.cget('text')
+    aca= int(acpamt.get())
+    fca = int(fcpamt.get())
+    iia = int(iipamt.get())
+    ua = int(ublamt.get())
+    mea = int(mepamt.get())
+    acda = int(acdamt.get())
+    fcda = int(fcdamt.get())
+    meda = int(medamt.get())
+    lta = int(ltamt.get())
+    sma =int(smamt.get())
+    prd = pradio.get()
+    tamt = totalamt.cget('text')
+    mnth = month.cget('text')
+    yer = year.cget('text')
         
     #     # # Load the Excel file or create a new one if it doesn't exist
         
-        try:
+    try:
             workbook = xl.load_workbook('stnpcdo.xlsx')
-        except FileNotFoundError:
+    except FileNotFoundError:
             workbook = xl.Workbook()
             workbook.remove(workbook.active)  # Remove the default sheet
             sheet = workbook.create_sheet(title='Sheet1')
@@ -108,20 +112,20 @@ def insert_data():
                         'II_PWT_CS','II_PWT_AMT', 'UBL_CS','UBL_AMT','TOTAL_CS','TOTAL_AMT',
                         'STAFF','WD','LITT_CS','LITT_AMT', 'SM_CS','SM_AMT',
                         'ME_PWT_CS', 'ME_PWT_AMT','ME_DIFF_CS', 'ME_DIFF_AMT','PERIOD','MONTH','YEAR'])  # Add headers
-        else:
+    else:
             sheet = workbook.active
 
         
             # Append the new data
-        sheet.append([list1,acs,aca,acdc,acda,fcs,fca,fcdc,fcda,iics,iia,ucs,ua,tcs,tamt,stf,w,ltc,lta,
+    sheet.append([list1,acs,aca,acdc,acda,fcs,fca,fcdc,fcda,iics,iia,ucs,ua,tcs,tamt,stf,w,ltc,lta,
                     smc,sma,mec,mea,medc,meda,prd,mnth,yer])
         
         # # Save the Excel file
-        workbook.save('stnpcdo.xlsx')
-        clear()
-        update_summery()
+    workbook.save('stnpcdo.xlsx')
+    clear()
+    update_summery()
         
-        messagebox.showinfo("Success", "Data inserted successfully!")
+    messagebox.showinfo("Success", "Data inserted successfully!")
 
 
 ################################# Clear command function ############################################
@@ -139,7 +143,7 @@ def clear():
     staff.delete(0,END)
     wd.delete(0,END)
     totalcs.config(text='')
-    
+    stncomb.set('')
     # Amount
     acpamt.delete(0,END)
     fcpamt.delete(0,END)
@@ -243,7 +247,6 @@ df= pd.read_excel('stnlist.xlsx')
 list1 = df.iloc[:,0].tolist()
 stncomb = ttk.Combobox(stnlable,values=list1,textvariable=cmbox)
 stncomb.grid(row=0,column=1,padx=10)
-# stncomb.set(list1[0])
 stncomb.bind("<<ComboboxSelected>>",validate_cmbox)
 
 tk.Label(stnlable,text='Select Period',font=('Times New Roman',12,'bold')).grid(row=0,column=2,padx=10)
@@ -259,7 +262,7 @@ radio=tk.Radiobutton(stnlable,text='III rd ',font=('Times New Roman',12,'bold'),
                            variable=pradio).grid(row=0,column=5,padx=10)
 pradio.set(1)
 
-addbtn = tk.Button(stnlable,text='ADD',command=insert_data,padx=10,pady=5,font=('Times New Roman',12,'bold'),
+addbtn = tk.Button(stnlable,text='ADD',command=validate,padx=10,pady=5,font=('Times New Roman',12,'bold'),
                       fg='brown',bg='light green').grid(row=0,column=6,padx=10,pady=10)
 
 
